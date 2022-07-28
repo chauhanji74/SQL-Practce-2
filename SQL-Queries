@@ -1,0 +1,123 @@
+--DDL(data definition Language)
+
+create database CollegeDb
+
+use CollegeDb
+
+drop database CollegeDb
+
+create table tbl_student(id int primary key identity(1000,1),
+						 name varchar(20) not null,
+						 age int,
+						 gender varchar(10),
+						 email varchar(30) unique,
+						 marks int,
+						 phone_no bigint unique,
+						 dept_id int)
+
+sp_rename 'tbl_student', 'tbl_students'
+
+truncate table tbl_students
+
+alter table tbl_students drop column dept_id
+
+alter table tbl_students add dept_id varchar(10)
+
+alter table tbl_students alter column phone_no bigint
+
+--DML(data manipulation language)
+
+insert into tbl_students values('Lalit Singh Chauhan', 21, 'male', 'lalit@gmail.com', 90, 7417849999, 1),
+							  ('Sumit', 23, 'male', 'sumit@gmail.com', 80, 8943599999, 2),
+							  ('Prince', 22, 'male', 'prince@gmail.com', 75, 9999888822, 1),
+							  ('Abhay', 23, 'male', 'abhay@gmail.com', 80, 8888222200, 3),
+							  ('Akash', 25, 'male', 'akash@gmail.com', 50, 7777662200, 3),
+							  ('rosy', 22, 'female', 'rosy@gmail.com', 85, 2222999911, 2),
+							  ('riya', 21, 'female', 'riya@gmail.com', 70, 5555222200, 1),
+							  ('raj', 24, 'male', 'raj@gmail.com', 55, 3333222200, 4),
+							  ('bhavya', 26, 'male', 'bhavya@gmail.com', 75, 4444222200, 4),
+							  ('abc', 2, 'male', 'abc@gmail.com', 87, 444422200, 1)
+
+insert into tbl_students2 values('iron', 23, 'male', 'iron@gmail.com', 70, 741784223, 3)
+
+update tbl_students set marks=60 where id=1008
+
+delete from tbl_students where id=1010
+
+--DQL(data query language)
+
+select * from tbl_students
+
+--SQL Agrigate functions
+
+select min(marks) from tbl_students;
+
+select max(marks) from tbl_students
+
+select sum(marks) from tbl_students
+
+select avg(marks) from tbl_students
+
+select count(*) from tbl_students
+
+--SQL Operators
+
+select * from tbl_students union all select * from tbl_students2
+
+select name from tbl_students intersect select name from tbl_students2
+
+select name from tbl_students except select name from tbl_students2
+
+select * from tbl_students where age in (21,22,23)
+
+select * from tbl_students where not gender = 'male'
+
+select * from tbl_students where id between 1010 and 1016
+
+select * from tbl_students where marks is null
+
+select * from tbl_students where marks is not null
+
+select * from tbl_students where name like 'L_l%'
+
+select * from tbl_students where exists(select marks from tbl_students where marks > 80)
+
+--SQL Clauses
+
+select min(marks), dept_id from tbl_students group by dept_id
+
+select * from tbl_students order by marks asc
+-
+select dept_id, sum(marks) as [sum acc to dept] from tbl_students group by dept_id having max(marks) >=80
+
+select distinct marks from tbl_students;
+
+--SQL primary key and foreign key
+
+create table customer_tbl(c_id int primary key,
+						  c_name varchar(30),
+						  c_address varchar(max),
+						  city varchar(20))
+
+insert into customer_tbl values(1, 'lalit', 'iqbalpur', 'roorkee')
+insert into customer_tbl values(2, 'sumit', 'indrapuram', 'gaziyabad')
+insert into customer_tbl values(3, 'abhay', 'mamura', 'noida')
+insert into customer_tbl values(4, 'prince', 'sector 62', 'noida')
+
+select * from customer_tbl
+
+create table order_tbl(o_id int primary key,
+					   item varchar(30),
+					   quantity int,
+					   price int,
+					   c_id int foreign key references customer_tbl(c_id))
+
+insert into order_tbl values(100, 'pen', 5, 10, 2)
+insert into order_tbl values(101, 'copy', 2, 60, 1)
+insert into order_tbl values(102, 'bag', 1, 800, 3)
+insert into order_tbl values(103, 'pencil', 3, 5, 4)
+insert into order_tbl values(104, 'rubber', 2, 5, 5)
+
+select * from order_tbl
+
+delete from customer_tbl where c_id = 4
